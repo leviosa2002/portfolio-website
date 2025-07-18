@@ -1,0 +1,237 @@
+@import "tailwindcss";
+
+@theme {
+  --color-border: hsl(var(--border));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-card: hsl(var(--card));
+
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-pulse-subtle: pulse-subtle 4s ease-in-out infinite;
+  --animate-fade-in: fade-in 0.7s ease-out forwards;
+  --animate-fade-in-delay-1: fade-in 0.7s ease-out 0.2s forwards;
+  --animate-fade-in-delay-2: fade-in 0.7s ease-out 0.4s forwards;
+  --animate-fade-in-delay-3: fade-in 0.7s ease-out 0.6s forwards;
+  --animate-fade-in-delay-4: fade-in 0.7s ease-out 0.8s forwards;
+  --animate-meteor: meteor 5s linear infinite;
+
+  /* Custom Animations for Glowing Border */
+  --animate-rotate-border: rotate-border 3s linear infinite;
+  --animate-spin-slow-reverse: spin-slow-reverse 6s linear infinite;
+  /* Add the pulse-glow animation variable */
+  --animate-pulse-glow: pulse-glow 3s ease-in-out infinite;
+
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  @keyframes pulse-subtle {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.8;
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes meteor {
+    0% {
+      transform: rotate(215deg) translateX(0);
+      opacity: 1;
+    }
+    70% {
+      opacity: 1;
+    }
+    100% {
+      transform: rotate(215deg) translateX(-500px);
+      opacity: 0;
+    }
+  }
+
+  /* Keyframes for the border rotation effect */
+  @keyframes rotate-border {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Keyframes for the slower reverse spin of the photo container */
+  @keyframes spin-slow-reverse {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(-360deg);
+    }
+  }
+
+  /* Keyframes for the pulsing glow effect */
+  @keyframes pulse-glow {
+    0%, 100% {
+      /* Initial and end state of the glow */
+      box-shadow: 0 0 30px 10px hsl(var(--primary) / 0.7),
+                  0 0 15px 5px rgba(139, 92, 246, 0.5);
+    }
+    50% {
+      /* Midpoint state: brighter, wider glow */
+      box-shadow: 0 0 45px 15px hsl(var(--primary)),
+                  0 0 25px 8px rgba(139, 92, 246, 0.8);
+    }
+  }
+}
+
+@layer base {
+  :root {
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+
+    --primary: 250 47% 60%;
+    --primary-foreground: 210 40% 98%;
+
+    --border: 214 32% 91%;
+  }
+
+  .dark {
+    --background: 222 47% 4%;
+    --foreground: 213 31% 91%;
+
+    --card: 222 47% 8%;
+
+    --primary: 250 65% 65%;
+    --primary-foreground: 213 31% 91%;
+
+    --border: 217 33% 20%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground transition-colors duration-300;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@utility container {
+  margin-inline: auto;
+  padding-inline: 2rem;
+
+  @media (width >= 640px) {
+    max-width: 640px;
+  }
+  @media (width >= 768px) {
+    max-width: 768px;
+  }
+  @media (width >= 1024px) {
+    max-width: 1024px;
+  }
+  @media (width >= 1280px) {
+    max-width: 1280px;
+  }
+  @media (width >= 1400px) {
+    max-width: 1400px;
+  }
+}
+
+@utility text-glow {
+  @apply relative;
+  text-shadow: 0 0 10px rgba(167, 139, 250, 0.5);
+}
+
+@utility card-hover {
+  @apply transition-transform duration-300 hover:scale-[1.02] hover:shadow-lg;
+}
+
+@utility gradient-border {
+  @apply relative rounded-md;
+  background: linear-gradient(to right, hsl(var(--card)), hsl(var(--card)));
+  background-clip: padding-box;
+  border: 1px solid transparent;
+}
+
+/* MODIFIED Utility for Glowing Photo Border */
+@utility shining-border {
+  /* This creates the gradient background that will act as the border */
+  background: linear-gradient(
+    to right,
+    hsl(var(--primary)), /* Uses your primary color */
+    #8b5cf6, /* Purple-500 */
+    #3b82f6, /* Blue-500 */
+    hsl(var(--primary))
+  );
+  /* These properties create the 'mask' effect, making the inner div appear as a cut-out in the gradient */
+  -webkit-mask: linear-gradient(#fff 0 0) content-box,
+                linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+
+  /* Apply the custom rotation animation */
+  animation: var(--animate-rotate-border);
+  transform-origin: center center; /* Ensures rotation happens from the center */
+
+  /* ADDED: Box-shadow for the outward glow */
+  box-shadow: 0 0 30px 10px hsl(var(--primary) / 0.7), /* Primary color glow layer */
+              0 0 15px 5px rgba(139, 92, 246, 0.5);   /* Secondary purple glow layer */
+  transition: box-shadow 0.3s ease-in-out; /* Smooth transition for any future hover/active effects */
+
+  /* Optional: If you want the glow itself to pulse, add the animation here as well */
+  /* animation: var(--animate-rotate-border), var(--animate-pulse-glow); */
+  /* If you want the glow to pulse *without* the border rotating: */
+  /* animation: var(--animate-pulse-glow); */
+}
+
+
+@utility cosmic-button {
+  @apply px-6 py-2 rounded-full bg-primary text-primary-foreground font-medium
+          transition-all duration-300 hover:shadow-[0_0_10px_rgba(139,92,246,0.5)]
+          hover:scale-105 active:scale-95;
+}
+
+@utility star {
+  @apply absolute rounded-full bg-white;
+  box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.4);
+}
+
+@utility meteor {
+  @apply absolute bg-linear-to-r from-white via-white to-transparent rounded-full;
+  box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.3);
+}
+
+#root {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  text-align: center;
+}
