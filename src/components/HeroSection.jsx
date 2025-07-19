@@ -1,4 +1,5 @@
 import { ArrowDown } from "lucide-react";
+import "../styles/card.css";
 
 export const HeroSection = () => {
   return (
@@ -38,14 +39,13 @@ export const HeroSection = () => {
             </div>
           </div>
 
-          {/* Right side: Photo Placeholder with Static Border and Glow */}
-          <div className="mt-12 md:mt-0 md:w-1/3 flex justify-center items-center">
-            {/* Make sure the 'shining-border' class is applied here */}
-            <div className="relative p-[3px] rounded-full bg-gradient-to-br from-primary via-purple-500 to-blue-500 **shining-border**">
-              {/* The inner div holds your actual photo */}
-              <div className="h-40 w-40 md:h-56 md:w-56 rounded-full bg-background flex items-center justify-center overflow-hidden">
+          {/* Right side: Glowing Card with Photo */}
+          <div className="mt-12 md:mt-0 md:w-1/3 flex justify-center">
+            <div className="card rounded-full h-40 w-40 md:h-56 md:w-56" role="button">
+              <span className="glow"></span>
+              <div className="inner">
                 <img
-                  src="/projects/profile_photo.jpg" // Confirm this path matches your file structure
+                  src="/projects/profile_photo.jpg"
                   alt="Ankit Prasad Profile"
                   className="h-full w-full object-cover rounded-full"
                 />

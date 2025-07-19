@@ -1,5 +1,6 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Home } from "./pages/Home";
+import { AllProjects } from "./pages/AllProjects";
 import { NotFound } from "./pages/NotFound";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -7,12 +8,13 @@ function App() {
   return (
     <>
       <Toaster />
-      <BrowserRouter>
+      <Router>
         <Routes>
-          <Route index element={<Home />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/projects" element={<AllProjects />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </BrowserRouter>
+      </Router>
     </>
   );
 }

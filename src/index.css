@@ -181,15 +181,16 @@
 
 /* MODIFIED Utility for Glowing Photo Border */
 @utility shining-border {
-  /* This creates the gradient background that will act as the border */
+  /* Base gradient background */
   background: linear-gradient(
     to right,
-    hsl(var(--primary)), /* Uses your primary color */
-    #8b5cf6, /* Purple-500 */
-    #3b82f6, /* Blue-500 */
+    hsl(var(--primary)), 
+    #8b5cf6, 
+    #3b82f6, 
     hsl(var(--primary))
   );
-  /* These properties create the 'mask' effect, making the inner div appear as a cut-out in the gradient */
+  
+  /* Mask effect */
   -webkit-mask: linear-gradient(#fff 0 0) content-box,
                 linear-gradient(#fff 0 0);
   mask: linear-gradient(#fff 0 0) content-box,
@@ -197,19 +198,20 @@
   -webkit-mask-composite: xor;
   mask-composite: exclude;
 
-  /* Apply the custom rotation animation */
-  animation: var(--animate-rotate-border);
-  transform-origin: center center; /* Ensures rotation happens from the center */
+  /* Enhanced glow effect */
+  box-shadow: 
+    0 0 25px 5px hsl(var(--primary) / 0.5),
+    0 0 45px 10px hsl(var(--primary) / 0.3),
+    0 0 60px 15px rgba(139, 92, 246, 0.2);
 
-  /* ADDED: Box-shadow for the outward glow */
-  box-shadow: 0 0 30px 10px hsl(var(--primary) / 0.7), /* Primary color glow layer */
-              0 0 15px 5px rgba(139, 92, 246, 0.5);   /* Secondary purple glow layer */
-  transition: box-shadow 0.3s ease-in-out; /* Smooth transition for any future hover/active effects */
+  /* Animations */
+  animation: 
+    var(--animate-rotate-border),
+    var(--animate-pulse-glow);
 
-  /* Optional: If you want the glow itself to pulse, add the animation here as well */
-  /* animation: var(--animate-rotate-border), var(--animate-pulse-glow); */
-  /* If you want the glow to pulse *without* the border rotating: */
-  /* animation: var(--animate-pulse-glow); */
+  /* Keep other properties */
+  transform-origin: center center;
+  transition: box-shadow 0.3s ease-in-out;
 }
 
 
