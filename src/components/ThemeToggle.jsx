@@ -35,7 +35,7 @@ export const ThemeToggle = () => {
       onClick={toggleTheme}
       className={cn(
         // Changed top-5 to top-2 (or top-4 for a bit more space)
-        "fixed max-sm:hidden top-0 right-5 z-50 p-2 rounded-full transition-colors duration-300",
+        "fixed max-sm:hidden top-12 right-5 z-50 p-2 rounded-full transition-colors duration-300",
         "focus:outlin-hidden" // Still a typo here, but not affecting layout
       )}
     >

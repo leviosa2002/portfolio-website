@@ -1,4 +1,5 @@
 import {
+  Github,
   Instagram,
   Linkedin,
   Mail,
@@ -10,123 +11,27 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-import { useState, useEffect } from "react"; // Added useEffect for EmailJS init
-// Removed: import { useEmail } from "@/hooks/use-email"; // No longer needed
-import emailjs from '@emailjs/browser'; // Import EmailJS
+import { useState } from "react";
+import { useEmail } from "@/hooks/use-email";
+
+// EmailJS credentials - Replace these with your actual values from EmailJS dashboard
+const EMAILJS_CONFIG = {
+  serviceId: "service_xwpzekn", // from Email Services tab
+  templateId: "template_0j5wk0d", // from Email Templates tab
+  publicKey: "3zSyJL-Y6saOTmJoa", // from Account > API Keys
+};
 
 export const ContactSection = () => {
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState(''); // success, error, cooldown
-
-  // Initialize EmailJS when the component mounts
-  // This is important for some EmailJS functionalities, though sendForm doesn't strictly need it here.
-  // It's good practice for general EmailJS usage.
-  useEffect(() => {
-    // Check if the public key is available before initializing
-    if (import.meta.env.VITE_EMAILJS_PUBLIC_KEY) {
-      emailjs.init(import.meta.env.VITE_EMAILJS_PUBLIC_KEY);
-    } else {
-      console.error("EmailJS Public Key not found in environment variables.");
-      toast({
-        title: "Configuration Error",
-        description: "Email sending is not configured correctly. Please check VITE_EMAILJS_PUBLIC_KEY.",
-        variant: "destructive",
-      });
-    }
-  }, [toast]);
+  const { sendEmail, loading, status } = useEmail();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setStatus(''); // Clear previous status
-
-    // Get IDs from environment variables
-    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY; // Already initialized, but good for clarity
-
-    // Basic client-side validation (can be more robust if needed)
-    const formData = new FormData(e.target);
-    const userName = formData.get('user_name');
-    const userEmail = formData.get('user_email');
-    const message = formData.get('message');
-
-    if (!userName || !userEmail || !message) {
-      setLoading(false);
-      setStatus('error');
-      toast({
-        title: "Validation Error",
-        description: "Please fill in all required fields.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!serviceId || !templateId || !publicKey) {
-      setLoading(false);
-      setStatus('error');
-      console.error("Missing EmailJS environment variables.");
-      toast({
-        title: "Configuration Error",
-        description: "EmailJS IDs are not set up correctly. Please check your .env file.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-
-    try {
-      // Send the email using EmailJS
-      const response = await emailjs.sendForm(serviceId, templateId, e.target, {
-        publicKey: publicKey,
-      });
-
-      console.log('EmailJS response:', response);
-
-      if (response.status === 200) {
-        setStatus('success');
-        toast({
-          title: "Message Sent!",
-          description: "Your message has been sent successfully. I'll get back to you soon!",
-          variant: "success",
-        });
-        e.target.reset(); // Clear the form
-      } else {
-        // EmailJS can return other statuses in the response object
-        setStatus('error');
-        toast({
-          title: "Message Failed!",
-          description: `There was an issue sending your message. EmailJS Status: ${response.status}`,
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      console.error('Error sending email:', error);
-      setStatus('error');
-      let errorMessage = "An unexpected network error occurred.";
-
-      // EmailJS specific error handling
-      if (error.status && error.text) {
-          errorMessage = `EmailJS Error (${error.status}): ${error.text}`;
-          if (error.status === 429) {
-            setStatus('cooldown');
-            errorMessage = "Too many requests. Please wait a moment and try again.";
-          }
-      } else if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
-          errorMessage = "Network error. Please check your internet connection.";
-      }
-
-      toast({
-        title: "Message Failed!",
-        description: errorMessage,
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
+    const success = await sendEmail(e.target);
+    if (success) {
+      e.target.reset();
     }
   };
-
   return (
     <section id="contact" className="py-24 px-4 relative bg-secondary/30">
       <div className="container mx-auto max-w-5xl">
@@ -191,18 +96,18 @@ export const ContactSection = () => {
             <div className="pt-8">
               <h4 className="font-medium mb-4"> Connect With Me</h4>
               <div className="flex space-x-4 justify-center">
-                <a href="#" target="_blank">
+                <a href="https://www.linkedin.com/in/ankit-prasad-79452524a/" target="_blank">
                   <Linkedin />
                 </a>
-                <a href="#" target="_blank">
-                  <Twitter />
+                <a href="https://github.com/leviosa2002" target="_blank">
+                  <Github />
                 </a>
-                <a href="#" target="_blank">
+                {/* <a href="#" target="_blank">
                   <Instagram />
-                </a>
-                <a href="#" target="_blank">
-                  <Twitch />
-                </a>
+                </a> */}
+                {/* <a href="#" target="_blank">
+                  < />
+                </a> */}
               </div>
             </div>
           </div>
@@ -222,7 +127,7 @@ export const ContactSection = () => {
                 <input
                   type="text"
                   id="name"
-                  name="user_name" // Ensure these 'name' attributes match your EmailJS template
+                  name="user_name"
                   required
                   className="w-full px-4 py-3 rounded-md border border-input bg-background focus:outline-hidden foucs:ring-2 focus:ring-primary"
                   placeholder="Ankit Prasad..."
@@ -240,7 +145,7 @@ export const ContactSection = () => {
                 <input
                   type="email"
                   id="email"
-                  name="user_email" // Ensure these 'name' attributes match your EmailJS template
+                  name="user_email"
                   required
                   className="w-full px-4 py-3 rounded-md border border-input bg-background focus:outline-hidden foucs:ring-2 focus:ring-primary"
                   placeholder="ankit@gmail.com"
@@ -257,7 +162,7 @@ export const ContactSection = () => {
                 </label>
                 <textarea
                   id="message"
-                  name="message" // Ensure these 'name' attributes match your EmailJS template
+                  name="message"
                   required
                   className="w-full px-4 py-3 rounded-md border border-input bg-background focus:outline-hidden foucs:ring-2 focus:ring-primary resize-none"
                   placeholder="Hello, I'd like to talk about..."
@@ -292,3 +197,5 @@ export const ContactSection = () => {
     </section>
   );
 };
+              
+

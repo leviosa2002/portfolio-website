@@ -1,39 +1,32 @@
 import { useState } from 'react';
+import emailjs from '@emailjs/browser';
+import { emailConfig } from '../config/email';
 
-const BACKEND_URL = 'http://localhost:3001/api';
+const COOLDOWN_TIME = 60000; // 1 minute cooldown
+let lastEmailTime = 0;
 
 export const useEmail = () => {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState('');
 
   const sendEmail = async (form) => {
-    const formData = new FormData(form);
+    const now = Date.now();
+    if (now - lastEmailTime < COOLDOWN_TIME) {
+      setStatus('cooldown');
+      return false;
+    }
+
     setLoading(true);
     try {
-      const response = await fetch(`${BACKEND_URL}/contact`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.get('user_name'),
-          email: formData.get('user_email'),
-          message: formData.get('message')
-        })
-      });
-
-      const data = await response.json();
-      
-      if (response.ok) {
-        setStatus('success');
-        return true;
-      } else if (response.status === 429) {
-        setStatus('cooldown');
-        return false;
-      } else {
-        setStatus('error');
-        return false;
-      }
+      await emailjs.sendForm(
+        emailConfig.serviceId,
+        emailConfig.templateId,
+        form,
+        emailConfig.publicKey
+      );
+      lastEmailTime = now;
+      setStatus('success');
+      return true;
     } catch (error) {
       console.error('Error:', error);
       setStatus('error');
