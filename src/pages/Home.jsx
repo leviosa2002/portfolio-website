@@ -21,7 +21,7 @@ export const Home = () => {
           We'll use absolute positioning relative to this new container.
         */}
         <div className="absolute top-4 right-4 md:top-6 md:right-6"> {/* Adjust top/right values as needed */}
-          <ThemeToggle />
+          {/* <ThemeToggle /> */}
         </div>
 
         {/* Navbar - Ensure it has top padding to account for the ThemeToggle */}
@@ -31,9 +31,9 @@ export const Home = () => {
       {/* Main Content */}
       <main>
         <HeroSection />
-        <AboutSection />
-        <SkillsSection />
         <ProjectsSection />
+        <SkillsSection />
+        <AboutSection />
         <ContactSection />
       </main>
 

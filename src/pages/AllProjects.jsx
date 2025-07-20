@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ExternalLink, Github } from "lucide-react";
 import { Navbar } from "../components/Navbar";
 import { ThemeToggle } from "../components/ThemeToggle";
@@ -6,49 +6,43 @@ import { ParticlesBackground } from "@/components/ParticlesBackground";
 import { Footer } from "../components/Footer";
 import { ProjectNavbar } from "../components/ProjectNavbar";
 
-const categories = ["All", "Web Dev", "Machine Learning", "UI/UX", "Data Analysis"];
+const categories = [ "Data Analysis", "Machine Learning", "UI/UX" ,"Web Dev"];
 
 const allProjects = [
+
   {
-    id: 1,
-    title: "Personal Portfolio",
-    description: "Showcase of my work and skills",
-    image: "/projects/portfolio.png",
-    tags: ["React", "Tailwind CSS"],
-    demoUrl: "https://demo-link.com/portfolio",
-    githubUrl: "https://github.com/yourusername/portfolio",
-    category: "Web Dev"
-  },
-  {
-    id: 2,
-    title: "AI Chatbot",
-    description: "Conversational AI using GPT-3",
-    image: "/projects/chatbot.png",
-    tags: ["Python", "Flask", "OpenAI"],
-    demoUrl: "https://demo-link.com/chatbot",
-    githubUrl: "https://github.com/yourusername/chatbot",
-    category: "Machine Learning"
-  },
-  {
-    id: 3,
-    title: "E-commerce Site",
-    description: "Online store with payment integration",
-    image: "/projects/ecommerce.png",
-    tags: ["React", "Node.js", "MongoDB"],
-    demoUrl: "https://demo-link.com/ecommerce",
-    githubUrl: "https://github.com/yourusername/ecommerce",
-    category: "Web Dev"
-  },
-  {
-    id: 4,
-    title: "Personal Finance Dashboard",
-    description: "Track expenses and investments with interactive charts",
-    image: "/projects/finance.png",
-    tags: ["React", "ChartJS", "Firebase"],
-    demoUrl: "https://demo-link.com/finance",
-    githubUrl: "https://github.com/yourusername/finance",
-    category: "Web Dev"
-  },
+        id: 1,
+        title: "Medical Cost Predictions",
+        description:
+            "A machine learning model forecasting healthcare expenditures to aid financial planning and policy.",
+        image: "/projects/medical.png",
+        tags: ["Python", "Jupyter", "Pandas"],
+        //demoUrl: "https://demo-link.com/movie-rec",
+        githubUrl: "https://github.com/leviosa2002/Medical_Cost_Prediction",
+        category: "Data Analysis"
+    },
+    {
+        id: 2,
+        title: "Speech Analysis",
+        description:
+            "A full-stack application (React + Python) that processes and extracts insights from audio data.",
+        image: "/projects/speech.png",
+        tags: ["React", "Vite", "TailwindCSS", "Python","OpenAI Wisper"],
+        //demoUrl: "https://demo-link.com/dashboard",
+        githubUrl: "https://github.com/leviosa2002/Speech-Analysis",
+        category: "Machine Learning"
+    },
+    {
+        id: 3,
+        title: "YouTube Analysis 1",
+        description: "A full-stack application (React + Python) to extract channel performance metrics and visualize audience engagement trends.",
+        image: "/projects/ytflask.png",
+        tags: ["Python", "Flask", "React"],
+        //demoUrl: "https://demo-link.com/ai-image",
+        githubUrl: "https://github.com/leviosa2002/Youtube-Analysis-Using-React-and-Flask",
+        category: "Data Analysis"
+    },
+
   // Add more projects here
 ];
 
@@ -56,8 +50,12 @@ export const AllProjects = () => {
   const [activeCategory, setActiveCategory] = useState("All");
 
   const filteredProjects = allProjects.filter(project => 
-    activeCategory === "All" || project.category === activeCategory
+    activeCategory === project.category
   );
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  },[])
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">

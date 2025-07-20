@@ -2,97 +2,74 @@
 
 import React, { useCallback } from "react";
 import Particles from "react-tsparticles";
-import { loadSlim } from "tsparticles-slim"; // This loads the 'slim' bundle for smaller file size
+import { loadSlim } from "tsparticles-slim";
 
 export const ParticlesBackground = () => {
   const particlesInit = useCallback(async (engine) => {
-    // This function is called when the Particles instance is initialized.
-    // You can load different bundles (full, slim, etc.) here.
     await loadSlim(engine);
   }, []);
 
   const particlesLoaded = useCallback(async (container) => {
-    // This function is called once the Particles instance has loaded.
     console.log("Particles loaded:", container);
   }, []);
 
-  // Define the configuration options for your particles
   const particlesOptions = {
     background: {
       color: {
-        value: "transparent", // Make the background of the particles transparent
+        value: "transparent",
       },
     },
-    fpsLimit: 120, // Frames per second limit
+    fpsLimit: 60, // Lower FPS for smoother fading if not much movement
     interactivity: {
       events: {
-        onClick: {
-          enable: true,
-          mode: "push", // On click, push more particles
-        },
-        onHover: {
-          enable: true,
-          mode: "repulse", // On hover, particles will repel
-        },
-      },
-      modes: {
-        push: {
-          quantity: 4,
-        },
-        repulse: {
-          distance: 100,
-          duration: 0.4,
-        },
+        onClick: { enable: false },
+        onHover: { enable: false },
       },
     },
     particles: {
       color: {
-        value: "#ffffff", // Color of the particles (white)
+        value: "#ffffff",
       },
       links: {
-        color: "#ffffff", // Color of the lines between particles (white)
-        distance: 150, // Max distance for lines to appear
-        enable: true, // Enable lines
-        opacity: 0.5, // Opacity of lines
-        width: 1, // Width of lines
+        enable: false, // Disable links for a cleaner blinking effect
       },
       move: {
-        direction: "none",
-        enable: true,
-        outModes: {
-          default: "bounce", // Particles bounce off edges
-        },
-        random: false,
-        speed: 1, // Speed of particles
-        straight: false,
+        enable: false, // Disable movement if you only want blinking
+        // If you want slow, subtle movement WITH blinking, set speed to a very small value like 0.1
       },
       number: {
         density: {
           enable: true,
           area: 800,
         },
-        value: 80, // Number of particles
+        value: 100, // Maybe more particles for a denser blink effect
       },
       opacity: {
-        value: 0.5, // Opacity of particles
+        value: 0.5, // Base opacity
+        animation: {
+          enable: true, // Enable opacity animation
+          speed: 1, // Speed of the fade in/out animation
+          minimumValue: 0.1, // Minimum opacity during the fade
+          sync: false, // Particles fade independently
+        },
       },
       shape: {
-        type: "circle", // Shape of particles
+        type: "circle",
       },
       size: {
-        value: { min: 1, max: 3 }, // Size range of particles
+        value: { min: 1, max: 3 },
       },
     },
-    detectRetina: true, // Detect retina displays for better quality
+    detectRetina: true,
   };
 
   return (
     <Particles
-      id="tsparticles-background" // Unique ID for the Particles canvas
+      id="tsparticles-background"
       init={particlesInit}
       loaded={particlesLoaded}
       options={particlesOptions}
-      className="absolute inset-0 z-0" // Tailwind classes to make it cover the entire parent and be behind other content
+      className="absolute inset-0 z-0"
     />
   );
 };

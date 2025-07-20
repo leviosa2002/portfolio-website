@@ -2,23 +2,26 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+// Solid icons
 import {
-  faCode, faTerminal, faDatabase, faCloud, faChartBar, faPalette,
+  faCode, faTerminal, faDatabase, faChartBar, faPalette,
   faBlender, faSquareRootVariable, faFileExcel, faFilm, faServer, faTableList,
-  faFileCode, faC
+  faFileCode, faC,
 } from '@fortawesome/free-solid-svg-icons';
 
+// Brand icons
 import {
-  faPython, faHtml5, faCss3Alt, faJs, faReact, faNodeJs, faGitAlt, faGithub,
+  faPython, faHtml5, faCss3Alt, faGitAlt, faGithub,
   faDocker, faFigma, faLinux, faAws, faReadme
 } from '@fortawesome/free-brands-svg-icons';
 
-
 const skillCategories = [
-  { id: "all", name: "All Skills" },
+  // { id: "all", name: "All Skills" },
   { id: "languages", name: "💻 Languages" },
-  { id: "libraries_frameworks", name: "📚 Libraries & Frameworks" },
-  { id: "cloud_databases", name: "☁️ Cloud & Databases" },
+  { id: "libraries", name: "📚 Libraries" },
+  { id: "frameworks", name: "🧩 Frameworks" },
+  { id: "databases", name: "🗄️ Databases" },
+  { id: "cloud", name: "☁️ Cloud Platforms" },
   { id: "data_bi_tools", name: "📊 Data & BI Tools" },
   { id: "design_creative", name: "🎨 Design & Creative" },
   { id: "development_tools", name: "🛠️ Development Tools" },
@@ -33,24 +36,28 @@ const allSkills = [
   { name: "CSS", icon: faCss3Alt, category: "languages" },
   { name: "MATLAB", icon: faSquareRootVariable, category: "languages" },
 
-  // Libraries & Frameworks
-  { name: "TensorFlow", icon: faCode, category: "libraries_frameworks" },
-  { name: "PyTorch", icon: faCode, category: "libraries_frameworks" },
-  { name: "OpenCV", icon: faCode, category: "libraries_frameworks" },
-  { name: "Flask", icon: faServer, category: "libraries_frameworks" },
-  { name: "Django", icon: faServer, category: "libraries_frameworks" },
-  { name: "NumPy", icon: faCode, category: "libraries_frameworks" },
-  { name: "Pandas", icon: faTableList, category: "libraries_frameworks" },
-  { name: "Streamlit", icon: faReadme, category: "libraries_frameworks" },
+  // Libraries
+  { name: "TensorFlow", icon: faCode, category: "libraries" },
+  { name: "PyTorch", icon: faCode, category: "libraries" },
+  { name: "OpenCV", icon: faCode, category: "libraries" },
+  { name: "NumPy", icon: faCode, category: "libraries" },
+  { name: "Pandas", icon: faTableList, category: "libraries" },
 
-  // Cloud & Databases
-  { name: "MySQL", icon: faDatabase, category: "cloud_databases" },
-  { name: "SQLite", icon: faDatabase, category: "cloud_databases" },
-  { name: "MongoDB", icon: faDatabase, category: "cloud_databases" },
-  { name: "AWS", icon: faAws, category: "cloud_databases" },
+  // Frameworks
+  { name: "Flask", icon: faServer, category: "frameworks" },
+  { name: "Django", icon: faServer, category: "frameworks" },
+  { name: "Streamlit", icon: faReadme, category: "frameworks" },
+
+  // Databases
+  { name: "MySQL", icon: faDatabase, category: "databases" },
+  { name: "SQLite", icon: faDatabase, category: "databases" },
+  { name: "MongoDB", icon: faDatabase, category: "databases" },
+
+  // Cloud Platforms
+  { name: "AWS", icon: faAws, category: "cloud" },
 
   // Data & BI Tools
-  { name: "Azure", icon: faCloud, category: "data_bi_tools" },
+  { name: "Tableau", icon: faChartBar, category: "data_bi_tools" },
   { name: "Excel", icon: faFileExcel, category: "data_bi_tools" },
   { name: "Power BI", icon: faChartBar, category: "data_bi_tools" },
 
@@ -66,24 +73,15 @@ const allSkills = [
   { name: "VS Code", icon: faTerminal, category: "development_tools" },
   { name: "Linux", icon: faLinux, category: "development_tools" },
   { name: "Jupyter", icon: faFileCode, category: "development_tools" },
+  { name: "Docker", icon: faDocker, category: "development_tools" },
 ];
 
 export const SkillsSection = () => {
-  const [activeCategory, setActiveCategory] = useState("all");
+  const [activeCategory, setActiveCategory] = useState("languages");
 
-  const skillsToDisplay =
-    activeCategory === "all"
-      ? allSkills
-      : allSkills.filter((skill) => skill.category === activeCategory);
-
-  const renderSkillCard = (skill) => (
-    <div key={skill.name} className="gradient-border p-4 card-hover flex flex-col items-center justify-center text-center">
-      <div className="p-3 rounded-full bg-primary/10 mb-2"> {/* Added mb-2 for spacing */}
-        <FontAwesomeIcon icon={skill.icon} className="h-6 w-6 text-primary" />
-      </div>
-      <p className="font-medium text-sm text-foreground">{skill.name}</p> {/* Re-added skill name */}
-    </div>
-  );
+  const skillsToDisplay = allSkills.filter(
+  (skill) => skill.category === activeCategory
+);
 
   return (
     <section id="skills" className="py-24 px-4 relative bg-secondary/30">
@@ -92,6 +90,7 @@ export const SkillsSection = () => {
           My <span className="text-primary"> Skills</span>
         </h2>
 
+        {/* --- Filter Buttons --- */}
         <div className="flex flex-wrap justify-center gap-4 mb-12">
           {skillCategories.map((category) => (
             <button
@@ -99,31 +98,38 @@ export const SkillsSection = () => {
               onClick={() => setActiveCategory(category.id)}
               className={cn(
                 "px-5 py-2 rounded-full transition-colors duration-300 capitalize",
+                "cursor-pointer",
                 activeCategory === category.id
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-secondary/70 text-foreground hover:bg-secondary"
+                  ? "bg-primary text-primary-foreground shadow-md"
+                  : "bg-secondary/70 text-foreground hover:bg-secondary hover:text-primary"
               )}
             >
-              {category.name.startsWith("All") ? "All" : category.name.split(' ')[1] || category.name}
+              {category.id === "all" ? "All Skills" : category.name}
             </button>
           ))}
         </div>
 
-        <div className="space-y-12">
-          {activeCategory === "all" ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-              {skillsToDisplay.map(renderSkillCard)}
-            </div>
-          ) : (
-            <div className="bg-card p-6 rounded-lg shadow-xs">
-              <h3 className="text-xl md:text-2xl font-semibold mb-6 text-center">
-                {skillCategories.find(cat => cat.id === activeCategory)?.name}
-              </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                {skillsToDisplay.map(renderSkillCard)}
+        {/* --- Skill Cards --- */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+          {skillsToDisplay.map((skill) => (
+            <div
+              key={skill.name}
+              className="bg-card p-2rounded-lg shadow-xl border border-border transition-transform duration-300 hover:scale-[1.03]"
+            >
+              <div
+                className={cn(
+                  "p-4 flex flex-col items-center justify-center text-center rounded-lg bg-muted",
+                  "relative group transition-all duration-300 ease-in-out",
+                  "dark:hover:ring-2 dark:hover:ring-[#8b5cf6] dark:hover:ring-offset-1 dark:hover:ring-offset-background"
+                )}
+              >
+                <div className="p-3 rounded-full bg-primary/10 mb-2">
+                  <FontAwesomeIcon icon={skill.icon} className="h-6 w-6 text-primary" />
+                </div>
+                <p className="font-medium text-sm text-foreground">{skill.name}</p>
               </div>
             </div>
-          )}
+          ))}
         </div>
       </div>
     </section>

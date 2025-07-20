@@ -22,6 +22,10 @@ export const ProjectNavbar = () => {
           <ArrowLeft size={16} />
           Back to Home
         </Link>
+        {/* <div className="cosmic-button flex items-center gap-2" onClick={()=>{history.back()}}>
+          <ArrowLeft size={16} />
+          Back to Home
+        </div> */}
       </div>
     </nav>
   );
