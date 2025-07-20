@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ExternalLink, Github, ArrowRight } from "lucide-react";
+import { ExternalLink, Code, Github, ArrowRight } from "lucide-react";
 
 const featuredProjects = [
 	{
@@ -123,3 +123,4 @@ export const ProjectsSection = () => {
 		</section>
 	);
 };
+	

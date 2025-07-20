@@ -4,6 +4,7 @@ import { Navbar } from "../components/Navbar";
 import { ThemeToggle } from "../components/ThemeToggle";
 import { ParticlesBackground } from "@/components/ParticlesBackground";
 import { Footer } from "../components/Footer";
+import { ProjectNavbar } from "../components/ProjectNavbar";
 
 const categories = ["All", "Web Dev", "Machine Learning", "UI/UX", "Data Analysis"];
 
@@ -63,16 +64,16 @@ export const AllProjects = () => {
       {/* Background Effects */}
       <ParticlesBackground />
 
-      {/* Navbar and Theme Toggle Container */}
+      {/* Theme Toggle and New Navbar */}
       <div className="relative z-50">
         <div className="absolute top-4 right-4 md:top-6 md:right-6">
           <ThemeToggle />
         </div>
-        <Navbar className="pt-16 md:pt-20" />
+        <ProjectNavbar />
       </div>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-20">
+      <main className="container mx-auto px-4 py-20 relative z-10">
         <h1 className="text-4xl font-bold text-center mb-12">All Projects</h1>
         
         {/* Filter Buttons */}
@@ -97,7 +98,7 @@ export const AllProjects = () => {
           {filteredProjects.map((project) => (
             <div
               key={project.id}
-              className="group bg-card rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300"
+              className="group bg-card/30 backdrop-blur-sm rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 border border-white/10"
             >
               <img src={project.image} alt={project.title} className="w-full h-40 object-cover" />
               <div className="p-4">
@@ -111,12 +112,24 @@ export const AllProjects = () => {
                   ))}
                 </div>
                 <div className="flex justify-between">
-                  <a href={project.demoUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline">
-                    Live Demo
-                  </a>
-                  <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:underline">
-                    <Github className="w-4 h-4 inline-block" />
-                  </a>
+                  <div className="flex gap-3">
+                    <a 
+                      href={project.demoUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-foreground/80 hover:text-primary transition-colors duration-300"
+                    >
+                      <ExternalLink size={20} />
+                    </a>
+                    <a 
+                      href={project.githubUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-foreground/80 hover:text-primary transition-colors duration-300"
+                    >
+                      <Github size={20} />
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
