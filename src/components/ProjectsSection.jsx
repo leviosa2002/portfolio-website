@@ -30,14 +30,14 @@ const featuredProjects = [
         description: "A full-stack application (React + Python) to extract channel performance metrics and visualize audience engagement trends.",
         image: "/projects/ytflask.png",
         tags: ["Python", "Flask", "React"],
-        //demoUrl: "https://demo-link.com/ai-image",
+        Url: "https://youtube-analysis-using-react-and-fl.vercel.app/",
         githubUrl: "https://github.com/leviosa2002/Youtube-Analysis-Using-React-and-Flask",
     },
 ];
 
 export const ProjectsSection = () => {
     return (
-        <section
+        <section data-scroll-section
             id="projects"
             className="py-20 bg-background/60 backdrop-blur-sm"
         >
@@ -79,14 +79,18 @@ export const ProjectsSection = () => {
 
                                 <div className="flex justify-between items-center pt-4">
                                     <div className="flex space-x-3">
-                                        {/* <a
-                                            href={project.demoUrl}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-foreground/80 hover:text-primary transition-colors duration-300"
-                                        >
-                                            <ExternalLink size={20} />
-                                        </a> */}
+                                        
+
+                                    {project.Url && (
+                                    <a
+                                        href={project.Url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-foreground/80 hover:text-primary transition-colors duration-300"
+                                    >
+                                        <ExternalLink size={20} />
+                                    </a>
+                                    )}
                                         <a
                                             href={project.githubUrl}
                                             target="_blank"

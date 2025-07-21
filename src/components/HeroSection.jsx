@@ -3,7 +3,7 @@ import "../styles/card.css";
 
 export const HeroSection = () => {
   return (
-    <section
+    <section data-scroll-section
       id="hero"
       className="relative min-h-screen flex flex-col items-center justify-center px-4 overflow-hidden"
     >
@@ -11,7 +11,7 @@ export const HeroSection = () => {
       {/* import { ParticlesBackground } from './ParticlesBackground'; */}
       {/* <ParticlesBackground /> */}
 
-      <div className="container max-w-5xl mx-auto text-center z-10">
+      <div className="container max-w-5xl mx-auto text-center z-10">``
         {/* Main content container for text and photo */}
         <div className="flex flex-col md:flex-row items-center justify-center md:space-x-12">
           {/* Left side: Text Content */}
@@ -28,8 +28,12 @@ export const HeroSection = () => {
               </span>
             </h1>
 
-            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto md:mx-0 opacity-0 animate-fade-in-delay-3">
-              I specialize in unlocking insights through **Data Analysis** and leveraging those findings to craft intuitive digital experiences as a **UI/UX Designer**. My passion lies in solving real-world problems and creating impactful solutions, often integrating **Machine Learning** concepts to enhance functionality. I'm continuously expanding my skillset with full-stack web development and explore creative expression through video editing with Adobe Premiere Pro and 3D design with Blender.
+            <p className="text-lg hidden md:block md:text-xl text-muted-foreground max-w-2xl mx-auto md:mx-0 opacity-0 animate-fade-in-delay-3">
+              
+              <strong className="font-bold">Data Analyst</strong> &amp;{" "}
+              <strong className="font-bold">UI/UX Designer</strong> focused on crafting impactful digital
+              solutions, integrating <strong className="font-bold">Machine Learning</strong> and building
+              out full-stack web experiences.
             </p>
 
             <div className="pt-4 opacity-0 animate-fade-in-delay-4 text-center md:text-left">
@@ -42,12 +46,12 @@ export const HeroSection = () => {
           {/* Right side: Glowing Card with Photo */}
           <div className="mt-12 md:mt-0 md:w-1/3 flex justify-center">
             <div className="card rounded-full h-40 w-40 md:h-56 md:w-56" role="button">
-              <span className="glow"></span>
-              <div className="inner">
+              {/* <span className="glow"></span> */}
+              <div className="inner rounded-[50%] overflow-hidden ">
                 <img
                   src="/projects/profile_photo.jpg"
                   alt="Ankit Prasad Profile"
-                  className="h-full w-full object-cover rounded-full"
+                  className="h-full w-full object-cover "
                 />
               </div>
             </div>
@@ -56,7 +60,11 @@ export const HeroSection = () => {
       </div>
 
       {/* Scroll Down Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center animate-bounce">
+      <div onClick={()=>{
+        const height = window.pageYOffset
+          window.scrollTo(0,height+100)
+          console.log(height);
+        }} className="cursor-pointer absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center animate-bounce">
         <span className="text-sm text-muted-foreground mb-2"> Scroll </span>
         <ArrowDown className="h-5 w-5 text-primary" />
       </div>

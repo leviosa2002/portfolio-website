@@ -7,8 +7,12 @@ import { SkillsSection } from "../components/SkillsSection";
 import { ProjectsSection } from "../components/ProjectsSection";
 import { ContactSection } from "../components/ContactSection";
 import { Footer } from "../components/Footer";
+import { LocomotiveScrollProvider } from 'react-locomotive-scroll';
+import { useRef, useState } from "react";
 
 export const Home = () => {
+  const containerRef = useRef(null);
+  const [scrollPos,setScrollPos] = useState(0);
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       {/* Background Effects */}
@@ -29,13 +33,32 @@ export const Home = () => {
       </div>
 
       {/* Main Content */}
-      <main>
+      <LocomotiveScrollProvider
+      options={{
+        smooth: true, // Enable smooth scrolling
+        // ... any other Locomotive Scroll options you want to configure
+        // See https://scroll.locomotive.ca/docs/options for full list
+      }}
+
+      watch={
+        [
+          // Dependencies to watch for layout changes
+          // e.g., if you have data fetching that changes content height,
+          // include a state variable here that updates on data load.
+          // For React Router, you might watch `location.pathname` or `router.asPath` (for Next.js)
+        ]
+      }
+      containerRef={containerRef} // Pass the ref to the provider
+    >
+
+      <main data-scroll-container ref={containerRef} >
         <HeroSection />
         <ProjectsSection />
         <SkillsSection />
         <AboutSection />
         <ContactSection />
       </main>
+    </LocomotiveScrollProvider>
 
       {/* Footer */}
       <Footer />

@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useEmail } from "@/hooks/use-email";
 
 // EmailJS credentials - Replace these with your actual values from EmailJS dashboard
@@ -23,17 +23,22 @@ const EMAILJS_CONFIG = {
 
 export const ContactSection = () => {
   const { toast } = useToast();
+  const [statusShow,setStatusShow] = useState(false);
   const { sendEmail, loading, status } = useEmail();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const success = await sendEmail(e.target);
+    setStatusShow(true);
+    setTimeout(() => {
+      setStatusShow(false);
+    }, 5000);
     if (success) {
       e.target.reset();
     }
   };
   return (
-    <section id="contact" className="py-24 px-4 relative bg-secondary/30">
+    <section data-scroll-section id="contact" className="py-24 px-4 relative bg-secondary/30">
       <div className="container mx-auto max-w-5xl">
         <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center">
           Get In <span className="text-primary"> Touch</span>
@@ -177,15 +182,15 @@ export const ContactSection = () => {
                 {loading ? "Sending..." : "Send Message"}
               </button>
 
-              {status === "success" && (
+              {statusShow && status === "success" && (
                 <p className="text-green-500">Message sent successfully!</p>
               )}
-              {status === "error" && (
+              {statusShow && status === "error" && (
                 <p className="text-red-500">
                   Failed to send message. Please try again.
                 </p>
               )}
-              {status === "cooldown" && (
+              {statusShow && status === "cooldown" && (
                 <p className="text-yellow-500">
                   Please wait a minute before sending another message.
                 </p>
