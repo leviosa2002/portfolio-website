@@ -4,7 +4,7 @@ import "../styles/card.css";
 export const HeroSection = () => {
   return (
     <section data-scroll-section
-      id="hero"
+      id="home"
       className="relative min-h-screen flex flex-col items-center justify-center px-4 overflow-hidden"
     >
       {/* If you are using a background component, keep its import and uncomment it here: */}

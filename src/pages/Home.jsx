@@ -1,5 +1,4 @@
 import { Navbar } from "../components/Navbar";
-import { ThemeToggle } from "../components/ThemeToggle";
 import { ParticlesBackground } from "@/components/ParticlesBackground";
 import { HeroSection } from "../components/HeroSection";
 import { AboutSection } from "../components/AboutSection";
@@ -7,60 +6,100 @@ import { SkillsSection } from "../components/SkillsSection";
 import { ProjectsSection } from "../components/ProjectsSection";
 import { ContactSection } from "../components/ContactSection";
 import { Footer } from "../components/Footer";
-import { LocomotiveScrollProvider } from 'react-locomotive-scroll';
-import { useRef, useState } from "react";
+import { LocomotiveScrollProvider, useLocomotiveScroll } from 'react-locomotive-scroll';
+import { useRef, useState, useEffect, useCallback } from "react";
 
 export const Home = () => {
   const containerRef = useRef(null);
-  const [scrollPos,setScrollPos] = useState(0);
+  const [activeSection, setActiveSection] = useState('home');
+
+  const { scroll: locomotiveScroll } = useLocomotiveScroll();
+
+  // 💡 NEW: Create a ref to always hold the latest locomotiveScroll instance
+  const scrollRef = useRef(null);
+
+  // 💡 NEW: Effect to update the ref whenever locomotiveScroll changes
+  useEffect(() => {
+    scrollRef.current = locomotiveScroll;
+  }, [locomotiveScroll]);
+
+  // Function to handle clicks on Navbar links for smooth scrolling
+  // This useCallback has an empty dependency array because it uses the mutable scrollRef.current
+  const handleNavLinkClick = useCallback((targetId) => {
+    // 💡 NEW: Use scrollRef.current to access the instance
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo(`#${targetId}`, {
+        duration: 1000,
+        easing: [0.645, 0.045, 0.355, 1.000],
+        offset: -80
+      });
+    } else {
+      console.warn("Locomotive Scroll instance not available for scrolling. Falling back to native scroll.");
+      const element = document.getElementById(targetId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  }, []); // Empty dependency array as scrollRef.current is stable
+
+  // Effect to listen for Locomotive Scroll's 'scroll' event for active section highlighting
+  useEffect(() => {
+    if (locomotiveScroll) {
+      console.log("Locomotive Scroll instance is available for active section tracking.");
+
+      const handleScroll = (instance) => {
+        let currentActive = null;
+        let minDistance = Infinity;
+
+        for (const key in instance.currentElements) {
+          if (instance.currentElements.hasOwnProperty(key)) {
+            const element = instance.currentElements[key];
+            if (element.inViewport) {
+                const distanceFromTop = Math.abs(element.y);
+                if (distanceFromTop < minDistance) {
+                    minDistance = distanceFromTop;
+                    currentActive = element.id;
+                }
+            }
+          }
+        }
+        if (currentActive && currentActive !== activeSection) {
+            setActiveSection(currentActive);
+        }
+      };
+
+      locomotiveScroll.on('scroll', handleScroll);
+
+      return () => {
+        locomotiveScroll.off('scroll', handleScroll);
+      };
+    }
+  }, [locomotiveScroll, activeSection]); // Dependencies: re-run if locomotiveScroll or activeSection changes
+
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
-      {/* Background Effects */}
       <ParticlesBackground />
 
-      {/* Container for Navbar and ThemeToggle to manage their relative positions */}    
-      <div className="relative z-50"> {/* Higher z-index to ensure it's on top of content and background */}
-        {/*
-          Theme Toggle - Position it at the top right with some padding.
-          We'll use absolute positioning relative to this new container.
-        */}
-        <div className="absolute top-4 right-4 md:top-6 md:right-6"> {/* Adjust top/right values as needed */}
-          {/* <ThemeToggle /> */}
-        </div>
-
-        {/* Navbar - Ensure it has top padding to account for the ThemeToggle */}
-        <Navbar className="pt-16 md:pt-20" /> {/* Add padding-top to the Navbar. Adjust 'pt-16' (or more) based on your ThemeToggle's size and desired spacing. */}
+      <div className="relative z-50">
+        <Navbar className="pt-16 md:pt-20" onNavLinkClick={handleNavLinkClick} activeSection={activeSection} />
       </div>
 
-      {/* Main Content */}
       <LocomotiveScrollProvider
-      options={{
-        smooth: true, // Enable smooth scrolling
-        // ... any other Locomotive Scroll options you want to configure
-        // See https://scroll.locomotive.ca/docs/options for full list
-      }}
+        options={{
+          smooth: true,
+        }}
+        watch={[]}
+        containerRef={containerRef}
+      >
+        <main data-scroll-container ref={containerRef}>
+          <HeroSection id="home" />
+          <ProjectsSection id="projects" />
+          <SkillsSection id="skills" />
+          <AboutSection id="about" />
+          <ContactSection id="contact" />
+        </main>
+      </LocomotiveScrollProvider>
 
-      watch={
-        [
-          // Dependencies to watch for layout changes
-          // e.g., if you have data fetching that changes content height,
-          // include a state variable here that updates on data load.
-          // For React Router, you might watch `location.pathname` or `router.asPath` (for Next.js)
-        ]
-      }
-      containerRef={containerRef} // Pass the ref to the provider
-    >
-
-      <main data-scroll-container ref={containerRef} >
-        <HeroSection />
-        <ProjectsSection />
-        <SkillsSection />
-        <AboutSection />
-        <ContactSection />
-      </main>
-    </LocomotiveScrollProvider>
-
-      {/* Footer */}
       <Footer />
     </div>
   );

@@ -3,6 +3,7 @@ import { Home } from "./pages/Home";
 import { AllProjects } from "./pages/AllProjects";
 import { NotFound } from "./pages/NotFound";
 import { Toaster } from "@/components/ui/toaster";
+import 'locomotive-scroll/dist/locomotive-scroll.css';
 
 function App() {
   return (
