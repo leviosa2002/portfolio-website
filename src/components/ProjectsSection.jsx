@@ -35,12 +35,14 @@ const featuredProjects = [
     },
 ];
 
-export const ProjectsSection = () => {
+export const ProjectsSection = ({id}) => {
     return (
-        <section data-scroll-section
-            id="projects"
-            className="py-20 bg-background/60 backdrop-blur-sm"
-        >
+        <section
+  data-scroll-section
+  data-scroll
+  id={id}
+  className="relative min-h-screen flex flex-col items-center justify-center px-4 py-24 overflow-hidden"
+>
             <div className="container mx-auto px-4">
                 <h2 className="text-3xl font-bold text-center mb-12">
                     Featured Projects

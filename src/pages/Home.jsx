@@ -13,94 +13,113 @@ export const Home = () => {
   const containerRef = useRef(null);
   const [activeSection, setActiveSection] = useState('home');
 
-  const { scroll: locomotiveScroll } = useLocomotiveScroll();
+  return (
+    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+      <ParticlesBackground />
 
-  // 💡 NEW: Create a ref to always hold the latest locomotiveScroll instance
+      <LocomotiveScrollProvider
+        options={{ smooth: true }}
+        containerRef={containerRef}
+        watch={[]}
+      >
+        <ScrollContent
+          containerRef={containerRef}
+          activeSection={activeSection}
+          setActiveSection={setActiveSection}
+        />
+      </LocomotiveScrollProvider>
+
+    </div>
+  );
+};
+
+// Inner scroll-aware content
+const ScrollContent = ({ containerRef, activeSection, setActiveSection }) => {
+  const { scroll: locomotiveScroll } = useLocomotiveScroll();
   const scrollRef = useRef(null);
 
-  // 💡 NEW: Effect to update the ref whenever locomotiveScroll changes
   useEffect(() => {
     scrollRef.current = locomotiveScroll;
   }, [locomotiveScroll]);
 
-  // Function to handle clicks on Navbar links for smooth scrolling
-  // This useCallback has an empty dependency array because it uses the mutable scrollRef.current
   const handleNavLinkClick = useCallback((targetId) => {
-    // 💡 NEW: Use scrollRef.current to access the instance
     if (scrollRef.current) {
       scrollRef.current.scrollTo(`#${targetId}`, {
         duration: 1000,
         easing: [0.645, 0.045, 0.355, 1.000],
-        offset: -80
+        offset: -80,
       });
     } else {
-      console.warn("Locomotive Scroll instance not available for scrolling. Falling back to native scroll.");
       const element = document.getElementById(targetId);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     }
-  }, []); // Empty dependency array as scrollRef.current is stable
+  }, []);
 
-  // Effect to listen for Locomotive Scroll's 'scroll' event for active section highlighting
-  useEffect(() => {
-    if (locomotiveScroll) {
-      console.log("Locomotive Scroll instance is available for active section tracking.");
+   useEffect(() => {
+  if (!locomotiveScroll) return;
 
-      const handleScroll = (instance) => {
-        let currentActive = null;
-        let minDistance = Infinity;
 
-        for (const key in instance.currentElements) {
-          if (instance.currentElements.hasOwnProperty(key)) {
-            const element = instance.currentElements[key];
-            if (element.inViewport) {
-                const distanceFromTop = Math.abs(element.y);
-                if (distanceFromTop < minDistance) {
-                    minDistance = distanceFromTop;
-                    currentActive = element.id;
-                }
-            }
-          }
-        }
-        if (currentActive && currentActive !== activeSection) {
-            setActiveSection(currentActive);
-        }
-      };
+ const handleScroll = (instance) => {
 
-      locomotiveScroll.on('scroll', handleScroll);
+  let currentActive = null;
+  let minDistance = Infinity;
 
-      return () => {
-        locomotiveScroll.off('scroll', handleScroll);
-      };
+  Object.entries(instance.currentElements).forEach(([key, element]) => {
+    const el = element.el;
+    const rect = el.getBoundingClientRect();
+
+    // Check if the section is in viewport
+    const inView = rect.top < window.innerHeight && rect.bottom > 0;
+
+    // console.log(`🧩 Checking ID: ${el.id}, top: ${rect.top.toFixed(2)}, bottom: ${rect.bottom.toFixed(2)}, inView: ${inView}`);
+
+    if (inView && el.id) {
+      const distance = Math.abs(rect.top);
+      if (distance < minDistance) {
+        minDistance = distance;
+        currentActive = el.id;
+      }
     }
-  }, [locomotiveScroll, activeSection]); // Dependencies: re-run if locomotiveScroll or activeSection changes
+  });
+
+  // console.log("⭐ Closest section in view:", currentActive);
+
+  if (currentActive && currentActive !== activeSection) {
+    setActiveSection(currentActive);
+  }
+};
+
+
+  locomotiveScroll.on('scroll', handleScroll);
+  return () => locomotiveScroll.off('scroll', handleScroll);
+}, [locomotiveScroll, activeSection, setActiveSection]);
 
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
-      <ParticlesBackground />
-
+    <>
       <div className="relative z-50">
         <Navbar className="pt-16 md:pt-20" onNavLinkClick={handleNavLinkClick} activeSection={activeSection} />
       </div>
 
-      <LocomotiveScrollProvider
-        options={{
-          smooth: true,
-        }}
-        watch={[]}
-        containerRef={containerRef}
-      >
-        <main data-scroll-container ref={containerRef}>
-          <HeroSection id="home" />
-          <ProjectsSection id="projects" />
+      <main data-scroll-container ref={containerRef}>
+        <HeroSection id="home" />
+        <div className="mt-24">
           <SkillsSection id="skills" />
+        </div>
+        <div className="mt-24">
+          <ProjectsSection id="projects" />
+        </div>
+        <div className="mt-24">
           <AboutSection id="about" />
+        </div>
+        <div className="mt-24">
           <ContactSection id="contact" />
-        </main>
-      </LocomotiveScrollProvider>
-
-      <Footer />
-    </div>
+        </div>
+        <Footer />
+      </main>
+      
+    </>
+   
   );
 };

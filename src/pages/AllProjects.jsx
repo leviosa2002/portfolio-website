@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { ExternalLink, Github } from "lucide-react";
 import { ParticlesBackground } from "@/components/ParticlesBackground";
 import { Footer } from "../components/Footer";
 import { ProjectNavbar } from "../components/ProjectNavbar";
+import { LocomotiveScrollProvider } from "react-locomotive-scroll";
+import "locomotive-scroll/dist/locomotive-scroll.css";
 
-// Removed "All" from categories
 const categories = ["Data Analysis", "Machine Learning", "UI/UX", "Web Dev"];
 
-const allProjects = [
-    {
+const allProjects = [  {
         id: 1,
         title: "Medical Cost Predictions",
         description:
@@ -66,105 +66,124 @@ const allProjects = [
         tags: ["Python", "Jupyter", "Pandas"],
         githubUrl: "https://github.com/leviosa2002/Medical_Cost_Prediction",
         category: ["Data Analysis", "Machine Learning"]
-    },
-];
+    },];
 
 export const AllProjects = () => {
-    // Default activeCategory to the first item in the categories array
-    const [activeCategory, setActiveCategory] = useState(categories[0]);
+  const [activeCategory, setActiveCategory] = useState(categories[0]);
+  const containerRef = useRef(null);
 
-    const filteredProjects = allProjects.filter(project => {
-        // Filter based on whether the activeCategory is included in the project's category array
-        // project.category is guaranteed to be an array now.
-        return project.category.includes(activeCategory);
-    });
+  const filteredProjects = allProjects.filter((project) =>
+    project.category.includes(activeCategory)
+  );
 
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
-    return (
-        <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
-            {/* Background Effects */}
-            <ParticlesBackground />
+  return (
+    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+      <ParticlesBackground />
 
-            {/* Theme Toggle and New Navbar */}
-            <div className="relative z-50">
-                
-                <ProjectNavbar />
-            </div>
+      <LocomotiveScrollProvider
+        options={{ smooth: true }}
+        containerRef={containerRef}
+        watch={[]}
+      >
+      <div className="relative z-50">
+        <ProjectNavbar />
+      </div>
 
-            {/* Main Content */}
-            <main className="container mx-auto px-4 py-20 relative z-10">
-                <h1 className="text-4xl font-bold text-center mb-12">All Projects</h1>
-                
-                {/* Filter Buttons */}
-                <div className="flex flex-wrap justify-center gap-4 mb-12">
-                    {categories.map(category => (
-                        <button
-                            key={category}
-                            onClick={() => setActiveCategory(category)}
-                            className={`px-4 py-2 rounded-full transition-all ${
-                                activeCategory === category 
-                                    ? "bg-primary text-white" 
-                                    : "bg-card hover:bg-primary/20"
-                            }`}
-                        >
-                            {category}
-                        </button>
-                    ))}
-                </div>
+      
+        <main
+          data-scroll-container
+          ref={containerRef}
+          className="relative z-10"
+        >
+          <section data-scroll-section>
+            <div className="container mx-auto px-4 py-20">
+              <h1 className="text-4xl font-bold text-center mb-12">
+                All Projects
+              </h1>
 
-                {/* Projects Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {filteredProjects.map((project) => (
-                        <div
-                            key={project.id}
-                            className="group bg-card/30 backdrop-blur-sm rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 border border-white/10"
-                        >
-                            <img src={project.image} alt={project.title} className="w-full h-40 object-cover" />
-                            <div className="p-4">
-                                <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
-                                <p className="text-sm text-muted-foreground mb-4">{project.description}</p>
-                                <div className="flex flex-wrap gap-2 mb-4">
-                                    {project.tags.map(tag => (
-                                        <span key={tag} className="text-xs rounded-full bg-primary/10 text-primary px-3 py-1">
-                                            {tag}
-                                        </span>
-                                    ))}
-                                </div>
-                                <div className="flex justify-between">
-                                    <div className="flex gap-3">
-                                        {
-                                            project.Url && (
-                                                <a
-                                                    href={project.Url}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="text-foreground/80 hover:text-primary transition-colors duration-300"
-                                                >
-                                                    <ExternalLink size={20} />
-                                                </a>
-                                            )
-                                        }
-                                        <a 
-                                            href={project.githubUrl} 
-                                            target="_blank" 
-                                            rel="noopener noreferrer" 
-                                            className="text-foreground/80 hover:text-primary transition-colors duration-300"
-                                        >
-                                            <Github size={20} />
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+              <div className="flex flex-wrap justify-center gap-4 mb-12">
+                {categories.map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => setActiveCategory(category)}
+                    className={`px-4 py-2 rounded-full transition-all ${
+                      activeCategory === category
+                        ? "bg-primary text-white"
+                        : "bg-card hover:bg-primary/20"
+                    }`}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {filteredProjects.map((project) => (
+                  <div
+                    key={project.id}
+                    className="group bg-card/30 backdrop-blur-sm rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 border border-white/10"
+                    data-scroll
+                  >
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      className="w-full h-40 object-cover"
+                    />
+                    <div className="p-4">
+                      <h3 className="text-xl font-semibold mb-2">
+                        {project.title}
+                      </h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        {project.description}
+                      </p>
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {project.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="text-xs rounded-full bg-primary/10 text-primary px-3 py-1"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                      <div className="flex justify-between">
+                        <div className="flex gap-3">
+                          {project.Url && (
+                            <a
+                              href={project.Url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-foreground/80 hover:text-primary transition-colors duration-300"
+                            >
+                              <ExternalLink size={20} />
+                            </a>
+                          )}
+                          <a
+                            href={project.githubUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-foreground/80 hover:text-primary transition-colors duration-300"
+                          >
+                            <Github size={20} />
+                          </a>
                         </div>
-                    ))}
-                </div>
-            </main>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
 
-            {/* Footer */}
+          
             <Footer />
-        </div>
-    );
+          
+        </main>
+      </LocomotiveScrollProvider>
+    </div>
+  );
 };

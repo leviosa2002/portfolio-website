@@ -1,9 +1,14 @@
 import { Briefcase, Code, User } from "lucide-react";
 import { motion } from "framer-motion";
 
-export const AboutSection = () => {
+export const AboutSection = ({id}) => {
   return (
-    <section id="about" data-scroll-section className="py-24 px-4 relative">
+    <section
+  data-scroll-section
+  data-scroll
+  id={id}
+  className="relative min-h-screen flex flex-col items-center justify-center px-4 py-24 overflow-hidden"
+>
       <div className="container mx-auto max-w-5xl">
         <motion.h2
           initial={{ opacity: 0, y: "100%" }}

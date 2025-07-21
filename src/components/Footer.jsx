@@ -2,18 +2,21 @@ import { ArrowUp } from "lucide-react";
 
 export const Footer = () => {
   return (
-    <footer className="py-12 px-4 bg-card relative border-t border-border mt-12 pt-8 flex flex-wrap justify-between items-center">
-      {" "}
+    <section
+      data-scroll-section
+      data-scroll
+      id="footer"
+      className="bg-card border-t border-border py=12 px-4 flex flex-wrap justify-between items-center"
+    >
       <p className="text-sm text-muted-foreground">
-        {" "}
         &copy; {new Date().getFullYear()} @leviosa2002. All rights reserved.
       </p>
-      <a
+      {/* <a
         href="#hero"
         className="p-2 rounded-full bg-primary/10 hover:bg-primary/20 text-primary transition-colors"
       >
         <ArrowUp size={20} />
-      </a>
-    </footer>
+      </a> */}
+    </section>
   );
 };

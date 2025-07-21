@@ -10,7 +10,7 @@ export const ParticlesBackground = () => {
   }, []);
 
   const particlesLoaded = useCallback(async (container) => {
-    console.log("Particles loaded:", container);
+    // console.log("Particles loaded:", container);
   }, []);
 
   const particlesOptions = {

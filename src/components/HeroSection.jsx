@@ -1,17 +1,19 @@
 import { ArrowDown } from "lucide-react";
 import "../styles/card.css";
 
-export const HeroSection = () => {
+export const HeroSection = ({id}) => {
   return (
-    <section data-scroll-section
-      id="home"
-      className="relative min-h-screen flex flex-col items-center justify-center px-4 overflow-hidden"
-    >
+    <section
+  data-scroll-section
+  data-scroll
+  id={id}
+  className="relative min-h-screen flex flex-col items-center justify-center px-4 py-24 overflow-hidden"
+>
       {/* If you are using a background component, keep its import and uncomment it here: */}
       {/* import { ParticlesBackground } from './ParticlesBackground'; */}
       {/* <ParticlesBackground /> */}
 
-      <div className="container max-w-5xl mx-auto text-center z-10">``
+      <div className="container max-w-5xl mx-auto text-center z-10">
         {/* Main content container for text and photo */}
         <div className="flex flex-col md:flex-row items-center justify-center md:space-x-12">
           {/* Left side: Text Content */}

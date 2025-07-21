@@ -1,12 +1,12 @@
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
-import { ThemeToggle } from "./ThemeToggle"; // <--- THIS LINE WAS MISSING!
+import { ThemeToggle } from "./ThemeToggle"; 
 
 const navItems = [
   { name: "Home", href: "#home" },
-  { name: "Projects", href: "#projects" },
   { name: "Skills", href: "#skills" },
+  { name: "Projects", href: "#projects" },
   { name: "About", href: "#about" },
   { name: "Contact", href: "#contact" },
 ];
@@ -32,15 +32,13 @@ export const Navbar = ({ onNavLinkClick, activeSection }) => {
   };
 
   return (
-    <nav
-      className={cn(
-        "fixed w-full z-40 transition-all duration-300 ",
-        "py-3 bg-background backdrop-blur-md shadow-xs"
-      )}
-    >
+    <nav className={cn(
+      "fixed w-full z-40 transition-all duration-300",
+      "py-3 bg-background backdrop-blur-md shadow-xs"
+    )}>
       <div className="container flex items-center justify-between">
         <a
-          className="text-xl font-bold text-primary flex items-center"
+          className="text-xl font-bold text-primary flex items-center cursor-pointer"
           onClick={(e) => handleClick(e, '#home')}
           href="#home"
         >
@@ -55,6 +53,7 @@ export const Navbar = ({ onNavLinkClick, activeSection }) => {
           {navItems.map((item, key) => {
             const itemId = item.href.substring(1);
             const isActive = activeSection === itemId;
+
             return (
               <a
                 key={key}
@@ -62,7 +61,7 @@ export const Navbar = ({ onNavLinkClick, activeSection }) => {
                 className={cn(
                   "text-foreground/80 hover:text-primary transition-colors duration-300",
                   {
-                    'font-bold underline text-primary': isActive,
+                    "font-bold underline text-primary": isActive,
                   }
                 )}
                 onClick={(e) => handleClick(e, item.href)}
@@ -71,7 +70,7 @@ export const Navbar = ({ onNavLinkClick, activeSection }) => {
               </a>
             );
           })}
-          <ThemeToggle /> {/* This is where the error occurred because it wasn't imported */}
+          <ThemeToggle />
         </div>
 
         {/* Mobile Navigation Toggle Button */}
@@ -80,23 +79,20 @@ export const Navbar = ({ onNavLinkClick, activeSection }) => {
           className="md:hidden p-2 text-foreground z-50"
           aria-label={isMenuOpen ? "Close Menu" : "Open Menu"}
         >
-          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}{" "}
+          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
 
         {/* Mobile Menu Overlay */}
-        <div
-          className={cn(
-            "fixed inset-0 bg-background/95 backdrop-blur-md z-40 flex flex-col items-center justify-center",
-            "transition-all duration-300 md:hidden",
-            isMenuOpen
-              ? "opacity-100 pointer-events-auto"
-              : "opacity-0 pointer-events-none"
-          )}
-        >
+        <div className={cn(
+          "fixed inset-0 bg-background/95 backdrop-blur-md z-40 flex flex-col items-center justify-center",
+          "transition-all duration-300 md:hidden",
+          isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        )}>
           <div className="flex flex-col space-y-8 text-xl">
             {navItems.map((item, key) => {
               const itemId = item.href.substring(1);
               const isActive = activeSection === itemId;
+
               return (
                 <a
                   key={key}
@@ -104,7 +100,7 @@ export const Navbar = ({ onNavLinkClick, activeSection }) => {
                   className={cn(
                     "text-foreground/80 hover:text-primary transition-colors duration-300",
                     {
-                      'font-bold underline text-primary': isActive,
+                      "font-bold underline text-primary": isActive,
                     }
                   )}
                   onClick={(e) => handleClick(e, item.href)}
