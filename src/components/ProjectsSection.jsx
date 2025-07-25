@@ -11,17 +11,17 @@ const featuredProjects = [
             "A machine learning model forecasting healthcare expenditures to aid financial planning and policy.",
         image: "/projects/medical.png",
         tags: ["Python", "Jupyter", "Pandas"],
-        //demoUrl: "https://demo-link.com/movie-rec",
+        Url: "https://medical-insurance-2002.streamlit.app/",
         githubUrl: "https://github.com/leviosa2002/Medical_Cost_Prediction",
     },
     {
         id: 2,
-        title: "Speech Analysis",
+        title: "Reddit Pulse Analysis",
         description:
-            "A full-stack application (React + Python) that processes and extracts insights from audio data.",
+            "A Streamlit app analyzing Reddit posts for trends and insights.",
         image: "/projects/speech.png",
         tags: ["React", "Vite", "TailwindCSS", "Python","OpenAI Wisper"],
-        //demoUrl: "https://demo-link.com/dashboard",
+        Url: "https://redditpulseanalysis.streamlit.app/",
         githubUrl: "https://github.com/leviosa2002/Speech-Analysis",
     },
     {

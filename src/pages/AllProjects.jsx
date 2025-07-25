@@ -14,9 +14,10 @@ const allProjects = [  {
         description:
             "A machine learning model forecasting healthcare expenditures to aid financial planning and policy.",
         image: "/projects/medical.png",
-        tags: ["Python", "Jupyter", "Pandas"],
+        tags: ["Python", "Streamlit", "Pandas"],
+        Url: "https://medical-insurance-2002.streamlit.app/",
         githubUrl: "https://github.com/leviosa2002/Medical_Cost_Prediction",
-        category: ["Data Analysis"]
+        category: ["Machine Learning", "Data Analysis"]
     },
     {
         id: 2,
@@ -26,7 +27,7 @@ const allProjects = [  {
         image: "/projects/speech.png",
         tags: ["React", "Vite", "TailwindCSS", "Python", "OpenAI Wisper"],
         githubUrl: "https://github.com/leviosa2002/Speech-Analysis",
-        category: ["Machine Learning", "Web Dev"]
+        category: ["Machine Learning"]
     },
     {
         id: 3,
@@ -36,7 +37,7 @@ const allProjects = [  {
         tags: ["Python", "Flask", "React"],
         Url: "https://youtube-analysis-using-react-and-fl.vercel.app/",
         githubUrl: "https://github.com/leviosa2002/Youtube-Analysis-Using-React-and-Flask",
-        category: ["Data Analysis", "Web Dev"]
+        category: ["Data Analysis"]
     },
     {
         id: 4,
@@ -54,6 +55,7 @@ const allProjects = [  {
             "Identified trends and forecasts to optimize sales strategies and boost revenue",
         image: "/projects/sales.png",
         tags: ["Python", "Jupyter", "Pandas"],
+        Url: "https://sales-analysis-2002.streamlit.app/",
         githubUrl: "https://github.com/leviosa2002/Medical_Cost_Prediction",
         category: ["Data Analysis"]
     },
@@ -66,7 +68,31 @@ const allProjects = [  {
         tags: ["Python", "Jupyter", "Pandas"],
         githubUrl: "https://github.com/leviosa2002/Medical_Cost_Prediction",
         category: ["Data Analysis", "Machine Learning"]
-    },];
+    },
+    {
+        id: 7,
+        title: "Reddit Pulse Analysis",
+        description:
+            "A Streamlit app analyzing Reddit posts for trends and insights.",
+        image: "/projects/reddit.png",
+        tags: ["React", "Vite", "TailwindCSS", "Python","OpenAI Wisper"],
+        Url: "https://redditpulseanalysis.streamlit.app/",
+        githubUrl: "https://github.com/leviosa2002/Speech-Analysis",
+        category: ["Machine Learning", "Data Analysis"]
+    },
+    {
+        id: 7,
+        title: "Competex",
+        description:
+            "A Frontend prototype for a competition platform, built with Next and TailwindCSS.",
+        image: "/projects/competex.png",
+        tags: ["React", "Vite", "TailwindCSS", "Python","OpenAI Wisper"],
+        Url: "https://redditpulseanalysis.streamlit.app/",
+        githubUrl: "https://github.com/leviosa2002/Speech-Analysis",
+        category: ["UI/UX", "Web Dev"]
+    },
+  
+  ];
 
 export const AllProjects = () => {
   const [activeCategory, setActiveCategory] = useState(categories[0]);
