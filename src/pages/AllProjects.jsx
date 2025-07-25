@@ -5,6 +5,7 @@ import { Footer } from "../components/Footer";
 import { ProjectNavbar } from "../components/ProjectNavbar";
 import { LocomotiveScrollProvider } from "react-locomotive-scroll";
 import "locomotive-scroll/dist/locomotive-scroll.css";
+import { motion, AnimatePresence } from "framer-motion";
 
 const categories = ["Data Analysis", "Machine Learning", "UI/UX", "Web Dev"];
 
@@ -81,7 +82,7 @@ const allProjects = [  {
         category: ["Machine Learning", "Data Analysis"]
     },
     {
-        id: 7,
+        id: 8,
         title: "Competex",
         description:
             "A Frontend prototype for a competition platform, built with Next and TailwindCSS.",
@@ -93,6 +94,27 @@ const allProjects = [  {
     },
   
   ];
+
+// Define animations with variants for better performance
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.4 }
+  }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2
+    }
+  }
+};
 
 export const AllProjects = () => {
   const [activeCategory, setActiveCategory] = useState(categories[0]);
@@ -127,15 +149,30 @@ export const AllProjects = () => {
         >
           <section data-scroll-section>
             <div className="container mx-auto px-4 py-20">
-              <h1 className="text-4xl font-bold text-center mb-12">
+              <motion.h1 
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="text-4xl font-bold text-center mb-12"
+              >
                 All Projects
-              </h1>
+              </motion.h1>
 
-              <div className="flex flex-wrap justify-center gap-4 mb-12">
-                {categories.map((category) => (
-                  <button
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="flex flex-wrap justify-center gap-4 mb-12"
+              >
+                {categories.map((category, index) => (
+                  <motion.button
                     key={category}
                     onClick={() => setActiveCategory(category)}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 * index, duration: 0.3 }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     className={`px-4 py-2 rounded-full transition-all ${
                       activeCategory === category
                         ? "bg-primary text-white"
@@ -143,65 +180,92 @@ export const AllProjects = () => {
                     }`}
                   >
                     {category}
-                  </button>
+                  </motion.button>
                 ))}
-              </div>
+              </motion.div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {filteredProjects.map((project) => (
-                  <div
-                    key={project.id}
-                    className="group bg-card/30 backdrop-blur-sm rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 border border-white/10"
-                    data-scroll
-                  >
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      className="w-full h-40 object-cover"
-                    />
-                    <div className="p-4">
-                      <h3 className="text-xl font-semibold mb-2">
-                        {project.title}
-                      </h3>
-                      <p className="text-sm text-muted-foreground mb-4">
-                        {project.description}
-                      </p>
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {project.tags.map((tag) => (
-                          <span
-                            key={tag}
-                            className="text-xs rounded-full bg-primary/10 text-primary px-3 py-1"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                      <div className="flex justify-between">
-                        <div className="flex gap-3">
-                          {project.Url && (
-                            <a
-                              href={project.Url}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeCategory}
+                  variants={staggerContainer}
+                  initial="hidden"
+                  animate="visible"
+                  exit={{ opacity: 0 }}
+                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                >
+                  {filteredProjects.map((project, index) => (
+                    <motion.div
+                      key={project.id}
+                      variants={fadeInUp}
+                      custom={index}
+                      whileHover={{ y: -5 }}
+                      transition={{ duration: 0.2, type: "tween" }}
+                      className="group bg-card/30 backdrop-blur-sm rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 border border-white/10"
+                      data-scroll
+                    >
+                      <motion.div
+                        className="h-40 overflow-hidden"
+                        whileHover={{ scale: 1.05 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <img
+                          src={project.image}
+                          alt={project.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </motion.div>
+                      <div className="p-4">
+                        <h3 className="text-xl font-semibold mb-2">
+                          {project.title}
+                        </h3>
+                        <p className="text-sm text-muted-foreground mb-4">
+                          {project.description}
+                        </p>
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          {project.tags.map((tag, idx) => (
+                            <motion.span
+                              key={tag}
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ delay: 0.05 * idx, duration: 0.2 }}
+                              whileHover={{ scale: 1.1 }}
+                              className="text-xs rounded-full bg-primary/10 text-primary px-3 py-1"
+                            >
+                              {tag}
+                            </motion.span>
+                          ))}
+                        </div>
+                        <div className="flex justify-between">
+                          <div className="flex gap-3">
+                            {project.Url && (
+                              <motion.a
+                                whileHover={{ scale: 1.2 }}
+                                transition={{ duration: 0.2 }}
+                                href={project.Url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-foreground/80 hover:text-primary transition-colors duration-300"
+                              >
+                                <ExternalLink size={20} />
+                              </motion.a>
+                            )}
+                            <motion.a
+                              whileHover={{ scale: 1.2 }}
+                              transition={{ duration: 0.2 }}
+                              href={project.githubUrl}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-foreground/80 hover:text-primary transition-colors duration-300"
                             >
-                              <ExternalLink size={20} />
-                            </a>
-                          )}
-                          <a
-                            href={project.githubUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-foreground/80 hover:text-primary transition-colors duration-300"
-                          >
-                            <Github size={20} />
-                          </a>
+                              <Github size={20} />
+                            </motion.a>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              </AnimatePresence>
             </div>
           </section>
 

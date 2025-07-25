@@ -12,13 +12,45 @@ import { useRef, useState, useEffect, useCallback } from "react";
 export const Home = () => {
   const containerRef = useRef(null);
   const [activeSection, setActiveSection] = useState('home');
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    // Detect mobile devices for optimizing scroll performance
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Optimize scroll options based on device
+  const scrollOptions = {
+    smooth: true,
+    smoothMobile: false,
+    smartphone: {
+      smooth: false,
+      breakpoint: 767,
+    },
+    tablet: {
+      smooth: true,
+      breakpoint: 1024,
+    },
+    // Reduce DOM calculations
+    lerp: isMobile ? 0.15 : 0.1,
+    getDirection: true,
+    getSpeed: false, // Disable speed calculation for performance
+    resetNativeScroll: true
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       <ParticlesBackground />
 
       <LocomotiveScrollProvider
-        options={{ smooth: true }}
+        options={scrollOptions}
         containerRef={containerRef}
         watch={[]}
       >
@@ -26,15 +58,15 @@ export const Home = () => {
           containerRef={containerRef}
           activeSection={activeSection}
           setActiveSection={setActiveSection}
+          isMobile={isMobile}
         />
       </LocomotiveScrollProvider>
-
     </div>
   );
 };
 
 // Inner scroll-aware content
-const ScrollContent = ({ containerRef, activeSection, setActiveSection }) => {
+const ScrollContent = ({ containerRef, activeSection, setActiveSection, isMobile }) => {
   const { scroll: locomotiveScroll } = useLocomotiveScroll();
   const scrollRef = useRef(null);
 
@@ -42,10 +74,11 @@ const ScrollContent = ({ containerRef, activeSection, setActiveSection }) => {
     scrollRef.current = locomotiveScroll;
   }, [locomotiveScroll]);
 
+  // Optimize scroll handler with throttling
   const handleNavLinkClick = useCallback((targetId) => {
     if (scrollRef.current) {
       scrollRef.current.scrollTo(`#${targetId}`, {
-        duration: 1000,
+        duration: isMobile ? 800 : 1000, // Shorter duration on mobile
         easing: [0.645, 0.045, 0.355, 1.000],
         offset: -80,
       });
@@ -55,46 +88,48 @@ const ScrollContent = ({ containerRef, activeSection, setActiveSection }) => {
         element.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     }
-  }, []);
+  }, [isMobile]);
 
-   useEffect(() => {
-  if (!locomotiveScroll) return;
+  // Throttle scroll events to improve performance
+  useEffect(() => {
+    if (!locomotiveScroll) return;
 
+    let lastUpdate = 0;
+    const throttleTime = isMobile ? 200 : 100; // Increase throttle on mobile
+    
+    const handleScroll = (instance) => {
+      const now = performance.now();
+      if (now - lastUpdate < throttleTime) return;
+      lastUpdate = now;
 
- const handleScroll = (instance) => {
+      let currentActive = null;
+      let minDistance = Infinity;
 
-  let currentActive = null;
-  let minDistance = Infinity;
+      // Process only visible elements for efficiency
+      Object.entries(instance.currentElements).forEach(([key, element]) => {
+        const el = element.el;
+        if (!el.id) return;
+        
+        const rect = el.getBoundingClientRect();
+        const inView = rect.top < window.innerHeight && rect.bottom > 0;
 
-  Object.entries(instance.currentElements).forEach(([key, element]) => {
-    const el = element.el;
-    const rect = el.getBoundingClientRect();
+        if (inView) {
+          const distance = Math.abs(rect.top);
+          if (distance < minDistance) {
+            minDistance = distance;
+            currentActive = el.id;
+          }
+        }
+      });
 
-    // Check if the section is in viewport
-    const inView = rect.top < window.innerHeight && rect.bottom > 0;
-
-    // console.log(`🧩 Checking ID: ${el.id}, top: ${rect.top.toFixed(2)}, bottom: ${rect.bottom.toFixed(2)}, inView: ${inView}`);
-
-    if (inView && el.id) {
-      const distance = Math.abs(rect.top);
-      if (distance < minDistance) {
-        minDistance = distance;
-        currentActive = el.id;
+      if (currentActive && currentActive !== activeSection) {
+        setActiveSection(currentActive);
       }
-    }
-  });
+    };
 
-  // console.log("⭐ Closest section in view:", currentActive);
-
-  if (currentActive && currentActive !== activeSection) {
-    setActiveSection(currentActive);
-  }
-};
-
-
-  locomotiveScroll.on('scroll', handleScroll);
-  return () => locomotiveScroll.off('scroll', handleScroll);
-}, [locomotiveScroll, activeSection, setActiveSection]);
+    locomotiveScroll.on('scroll', handleScroll);
+    return () => locomotiveScroll.off('scroll', handleScroll);
+  }, [locomotiveScroll, activeSection, setActiveSection, isMobile]);
 
   return (
     <>
@@ -118,8 +153,6 @@ const ScrollContent = ({ containerRef, activeSection, setActiveSection }) => {
         </div>
         <Footer />
       </main>
-      
     </>
-   
   );
 };

@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { ThemeToggle } from "./ThemeToggle"; 
+import { motion, AnimatePresence } from "framer-motion";
 
 const navItems = [
   { name: "Home", href: "#home" },
@@ -32,12 +33,17 @@ export const Navbar = ({ onNavLinkClick, activeSection }) => {
   };
 
   return (
-    <nav className={cn(
+    <motion.nav 
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.5 }}
+      className={cn(
       "fixed w-full z-40 transition-all duration-300",
       "py-3 bg-background backdrop-blur-md shadow-xs"
     )}>
       <div className="container flex items-center justify-between">
-        <a
+        <motion.a
+          whileHover={{ scale: 1.05 }}
           className="text-xl font-bold text-primary flex items-center cursor-pointer"
           onClick={(e) => handleClick(e, '#home')}
           href="#home"
@@ -46,7 +52,7 @@ export const Navbar = ({ onNavLinkClick, activeSection }) => {
             <span className="text-glow text-foreground"> Ankit's </span>{" "}
             Portfolio
           </span>
-        </a>
+        </motion.a>
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex space-x-8 items-center">
@@ -55,9 +61,10 @@ export const Navbar = ({ onNavLinkClick, activeSection }) => {
             const isActive = activeSection === itemId;
 
             return (
-              <a
+              <motion.a
                 key={key}
                 href={item.href}
+                whileHover={{ scale: 1.1 }}
                 className={cn(
                   "text-foreground/80 hover:text-primary transition-colors duration-300",
                   {
@@ -67,51 +74,68 @@ export const Navbar = ({ onNavLinkClick, activeSection }) => {
                 onClick={(e) => handleClick(e, item.href)}
               >
                 {item.name}
-              </a>
+              </motion.a>
             );
           })}
           <ThemeToggle />
         </div>
 
         {/* Mobile Navigation Toggle Button */}
-        <button
+        <motion.button
+          whileTap={{ scale: 0.9 }}
           onClick={() => setIsMenuOpen((prev) => !prev)}
           className="md:hidden p-2 text-foreground z-50"
           aria-label={isMenuOpen ? "Close Menu" : "Open Menu"}
         >
           {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        </motion.button>
 
         {/* Mobile Menu Overlay */}
-        <div className={cn(
-          "fixed inset-0 bg-background/95 backdrop-blur-md z-40 flex flex-col items-center justify-center",
-          "transition-all duration-300 md:hidden",
-          isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        )}>
-          <div className="flex flex-col space-y-8 text-xl">
-            {navItems.map((item, key) => {
-              const itemId = item.href.substring(1);
-              const isActive = activeSection === itemId;
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              className={cn(
+                "fixed inset-0 bg-background/95 backdrop-blur-md z-40 flex flex-col items-center justify-center",
+                "md:hidden"
+              )}>
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1, staggerChildren: 0.1 }}
+                className="flex flex-col space-y-8 text-xl">
+                {navItems.map((item, key) => {
+                  const itemId = item.href.substring(1);
+                  const isActive = activeSection === itemId;
 
-              return (
-                <a
-                  key={key}
-                  href={item.href}
-                  className={cn(
-                    "text-foreground/80 hover:text-primary transition-colors duration-300",
-                    {
-                      "font-bold underline text-primary": isActive,
-                    }
-                  )}
-                  onClick={(e) => handleClick(e, item.href)}
-                >
-                  {item.name}
-                </a>
-              );
-            })}
-          </div>
-        </div>
+                  return (
+                    <motion.a
+                      key={key}
+                      href={item.href}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 * key }}
+                      whileHover={{ scale: 1.1, x: 5 }}
+                      className={cn(
+                        "text-foreground/80 hover:text-primary transition-colors duration-300",
+                        {
+                          "font-bold underline text-primary": isActive,
+                        }
+                      )}
+                      onClick={(e) => handleClick(e, item.href)}
+                    >
+                      {item.name}
+                    </motion.a>
+                  );
+                })}
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </nav>
+    </motion.nav>
   );
 };

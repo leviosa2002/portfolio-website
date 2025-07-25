@@ -1,10 +1,29 @@
 // src/components/ParticlesBackground.jsx
 
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
 
 export const ParticlesBackground = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check for mobile device on mount
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+    };
+    
+    // Set initial value
+    checkMobile();
+    
+    // Add resize listener
+    window.addEventListener('resize', checkMobile);
+    
+    // Cleanup
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const particlesInit = useCallback(async (engine) => {
     await loadSlim(engine);
   }, []);
@@ -13,13 +32,14 @@ export const ParticlesBackground = () => {
     // console.log("Particles loaded:", container);
   }, []);
 
+  // Optimized options based on device type
   const particlesOptions = {
     background: {
       color: {
         value: "transparent",
       },
     },
-    fpsLimit: 60, // Lower FPS for smoother fading if not much movement
+    fpsLimit: isMobile ? 30 : 60, // Lower FPS on mobile
     interactivity: {
       events: {
         onClick: { enable: false },
@@ -34,30 +54,29 @@ export const ParticlesBackground = () => {
         enable: false, // Disable links for a cleaner blinking effect
       },
       move: {
-        enable: false, // Disable movement if you only want blinking
-        // If you want slow, subtle movement WITH blinking, set speed to a very small value like 0.1
+        enable: false, // Disable movement
       },
       number: {
         density: {
           enable: true,
           area: 800,
         },
-        value: 100, // Maybe more particles for a denser blink effect
+        value: isMobile ? 50 : 100, // Fewer particles on mobile
       },
       opacity: {
         value: 0.5, // Base opacity
         animation: {
-          enable: true, // Enable opacity animation
-          speed: 1, // Speed of the fade in/out animation
-          minimumValue: 0.1, // Minimum opacity during the fade
-          sync: false, // Particles fade independently
+          enable: true,
+          speed: isMobile ? 0.7 : 1, // Slower animation on mobile
+          minimumValue: 0.1,
+          sync: false,
         },
       },
       shape: {
         type: "circle",
       },
       size: {
-        value: { min: 1, max: 3 },
+        value: { min: 1, max: isMobile ? 2 : 3 }, // Smaller particles on mobile
       },
     },
     detectRetina: true,
